@@ -2,6 +2,7 @@ package com.surya.controller;
 
 import java.io.IOException;
 
+import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -29,18 +30,19 @@ public class FileOpertionsController {
 
 		FileEntity fileEntity = fileService.saveFile(file);
 
-		return new ResponseEntity<>(
-				"File uploded sucessfully " + "File id is " + fileEntity.getId(),
-				HttpStatus.OK);
+		return new ResponseEntity<>("File uploded sucessfully " + "File id is " + fileEntity.getId(), HttpStatus.OK);
 	}
 
 	@GetMapping("/download/{id}")
 	public ResponseEntity<byte[]> downloadFile(@PathVariable Long id) {
 
-		FileEntity file = fileService.getFile(id);
-		return ResponseEntity.ok().contentType(MediaType.parseMediaType(file.getFileType()))
-				.header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + file.getFileName() + "\"")
-				.body(file.getData());
+		FileEntity file = fileService.getFileById(id);
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.parseMediaType(file.getFileType()));
+		headers.setContentDisposition(ContentDisposition.builder("inline").filename(file.getFileName()).build());
+
+		return ResponseEntity.ok().headers(headers).body(file.getData());
 
 	}
 

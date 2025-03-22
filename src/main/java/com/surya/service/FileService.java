@@ -32,7 +32,7 @@ public class FileService {
 
 	}
 
-	public FileEntity getFile(Long id) {
+	public FileEntity getFileById(Long id) {
 
 		return fileRepository.findById(id).orElseThrow(() -> new FileNotFoundException("File not found"));
 	}
