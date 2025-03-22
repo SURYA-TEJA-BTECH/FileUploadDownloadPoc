@@ -43,10 +43,68 @@ Storing files (binary data) directly in a relational database is **not a best pr
 
 
 
+
+## Changing Content-Disposition: `inline` vs. `attachment`
+
+When serving a file in a Spring Boot application, you can control how the browser handles it using the **`Content-Disposition`** header.
+
+### 1️⃣ **Setting Content-Disposition in Spring Boot**
+You can set `Content-Disposition` 
+
+```java
+@GetMapping("/download/{id}")
+public ResponseEntity<byte[]> downloadFile(@PathVariable Long id){
+                                       
+    FileEntity file = fileService.getFileById(id);
+
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.parseMediaType(file.getFileType()));
+    headers.setContentDisposition(ContentDisposition.builder("inline")
+            .filename(file.getFileName())
+            .build());
+
+    return ResponseEntity.ok()
+            .headers(headers)
+            .body(file.getData());
+}
+```
+### 2️⃣ **Difference Between `inline` and `attachment`**
+#### **📄 `inline` (Direct Display in Browser)**
+```http
+Content-Disposition: inline; filename="document.pdf"
+```
+- The browser **tries to display** the file instead of downloading it.
+- Works well for images (`.jpg`, `.png`), PDFs (`.pdf`), and text files (`.txt`).
+- Example: If you request a PDF with `inline`, the browser opens it in the built-in PDF viewer.
+
+#### **📥 `attachment` (Forces Download)**
+```http
+Content-Disposition: attachment; filename="document.pdf"
+```
+- Forces the browser to **prompt for download** instead of displaying it.
+- Works for all file types.
+- Example: When clicking a download link, the browser asks, "Do you want to save this file?"
+
+
+
+
+
+## H2-Console
+
+
+
+
 ![image](https://github.com/user-attachments/assets/7025137a-d722-4fbc-a696-44ac06b2c8d2)
 
 
+## Swagger
+
+
 ![image](https://github.com/user-attachments/assets/2f56f0f5-be7c-4d46-b06f-487ad722fffc)
+![image](https://github.com/user-attachments/assets/4cd53a62-aefc-4fcd-8ea9-965d83cfbfcb)
+
+
+## POSTMAN
 
 ![image](https://github.com/user-attachments/assets/5ab3135e-9a46-491c-9bfd-5816d52f136d)
 
