@@ -85,8 +85,15 @@ Content-Disposition: attachment; filename="document.pdf"
 - Works for all file types.
 - Example: When clicking a download link, the browser asks, "Do you want to save this file?"
 
+## NOTE
 
+when uploading a file in a Spring Boot REST API, you typically use @RequestParam instead of @RequestBody because:
 
+Serialization Limitation: Files (binary data) cannot be directly serialized into JSON or other text-based formats used in @RequestBody.
+
+Multipart Form Data: File uploads require multipart/form-data encoding, which @RequestParam supports.
+
+Spring Support: Spring provides built-in support for handling file uploads using MultipartFile, which works seamlessly with @RequestParam.
 
 
 ## H2-Console
